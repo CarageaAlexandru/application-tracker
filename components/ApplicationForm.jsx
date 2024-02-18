@@ -132,27 +132,26 @@ const Form = () => {
 				onChange={(e) => setJobLink(e.target.value)}
 				onSearch={fetchJobDetails}
 			/>
-			{jobTitle && (
-				<TextInput
-					readOnly={false}
-					label="Job Title"
-					value={jobTitle}
-					onChange={(e) => setJobTitle(e.target.value)}
-					error={formErrors.jobTitle} // Assuming TextInput accepts an `error` prop
-				/>
-			)}
+
+			<TextInput
+				readOnly={false}
+				label="Job Title"
+				value={jobTitle}
+				onChange={(e) => setJobTitle(e.target.value)}
+				error={formErrors.jobTitle} // Assuming TextInput accepts an `error` prop
+			/>
+
 			{formErrors.jobLink && (
 				<p className="text-red-500">{formErrors.jobLink}</p>
 			)}
 
-			{fetchedDescription && (
-				<TextArea
-					value={fetchedDescription}
-					label="Description"
-					onChange={(e) => setFetchedDescription(e.target.value)}
-					readOnly={false}
-				/>
-			)}
+			<TextArea
+				value={fetchedDescription}
+				label="Description"
+				onChange={(e) => setFetchedDescription(e.target.value)}
+				readOnly={false}
+			/>
+
 			<div className="flex flex-col">
 				<label className="block text-sm font-medium mb-2 dark:text-white text-black">
 					Status
