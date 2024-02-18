@@ -2,6 +2,7 @@
 export default function StatusFilters({ onFilterSelect }) {
 	// These would likely be managed via state in a real app
 	const filters = [
+		{ name: "All", color: "bg-gray-500" },
 		{ name: "Applied", color: "bg-green-500" },
 		{ name: "Not Applied", color: "bg-gray-500" },
 		{ name: "Closed", color: "bg-red-500" },

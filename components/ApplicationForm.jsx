@@ -5,6 +5,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import TextArea from "./ui/textArea";
 import SearchComponent from "./ui/searchComponent";
 import axios from "axios";
+import { jobFormSchema } from "@/schemas";
+import { z } from "zod";
 
 const filters = [
 	"Applied",
@@ -16,27 +18,69 @@ const filters = [
 ];
 
 const Form = () => {
+	const [formErrors, setFormErrors] = useState({});
 	const [date, setDate] = useState(new Date());
 	const [jobLink, setJobLink] = useState("");
 	const [status, setStatus] = useState("");
 	const [notes, setNotes] = useState("");
 	const [fetchedDescription, setFetchedDescription] = useState("");
 	const [jobTitle, setJobTitle] = useState("");
-	console.log("🚀 ~ Form ~ fetchedDescription:", fetchedDescription);
 
 	// Handle form submission
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault(); // Prevent default form submission
-		console.log({
+
+		// Prepare your form data
+		const jobData = {
 			jobLink,
 			jobTitle,
 			fetchedDescription,
 			status,
 			date,
 			notes,
-		});
-	};
+		};
 
+		try {
+			// Validate form data against the Zod schema
+			jobFormSchema.parse(jobData);
+
+			// If validation passes, proceed with form submission
+			try {
+				const response = await axios.post("/api/create-application", jobData, {
+					headers: {
+						"Content-Type": "application/json",
+					},
+				});
+
+				// Handle success - e.g., resetting the form, showing a success message, etc.
+				console.log(response.data.message);
+				// Reset form state here if necessary
+				setDate(new Date()); // Reset date to current
+				setJobLink("");
+				setJobTitle("");
+				setFetchedDescription("");
+				setStatus("");
+				setNotes("");
+				setFormErrors({}); // Clear any previous errors
+			} catch (error) {
+				// Handle errors from the server or network issues
+				console.error("There was an error submitting the form:", error);
+				// Here you might want to set an error message to inform the user that submission failed
+			}
+		} catch (error) {
+			if (error instanceof z.ZodError) {
+				// Convert Zod errors to a more usable object for displaying
+				const errorMessages = {};
+				for (const issue of error.issues) {
+					if (issue.path.length > 0) {
+						// Assuming issue.path[0] is a string for simplicity, adjust based on your data structure
+						errorMessages[issue.path[0]] = issue.message;
+					}
+				}
+				setFormErrors(errorMessages);
+			}
+		}
+	};
 	async function fetchJobDetails() {
 		const url = jobLink;
 
@@ -88,14 +132,17 @@ const Form = () => {
 				onChange={(e) => setJobLink(e.target.value)}
 				onSearch={fetchJobDetails}
 			/>
-
 			{jobTitle && (
 				<TextInput
 					readOnly={false}
 					label="Job Title"
 					value={jobTitle}
 					onChange={(e) => setJobTitle(e.target.value)}
+					error={formErrors.jobTitle} // Assuming TextInput accepts an `error` prop
 				/>
+			)}
+			{formErrors.jobLink && (
+				<p className="text-red-500">{formErrors.jobLink}</p>
 			)}
 
 			{fetchedDescription && (
@@ -123,13 +170,24 @@ const Form = () => {
 						</option>
 					))}
 				</select>
+				{formErrors.status && (
+					<p className="text-red-500">{formErrors.status}</p>
+				)}
 			</div>
-			<DatePicker
-				className="border text-black border-gray-300 rounded-md px-3 py-2"
-				selected={date}
-				onChange={(date) => setDate(date)}
+			<div>
+				<DatePicker
+					className="border text-black border-gray-300 rounded-md px-3 py-2"
+					selected={date}
+					onChange={(date) => setDate(date)}
+				/>
+				{/* display an error message from from */}
+				{formErrors.date && <p>{formErrors.date}</p>}
+			</div>
+			<TextArea
+				value={notes}
+				onChange={(e) => setNotes(e.target.value)}
+				error={formErrors.notes} // Assuming TextInput accepts an `error` prop
 			/>
-			<TextArea value={notes} onChange={(e) => setNotes(e.target.value)} />
 			<div className="flex justify-center">
 				<button
 					type="submit"

@@ -1,7 +1,7 @@
 import React from "react";
 
 // Correctly defining the TextArea component for controlled usage
-const TextArea = ({ value, onChange, label, readOnly }) => {
+const TextArea = ({ value, onChange, label, readOnly, error }) => {
 	return (
 		<div className="flex flex-col">
 			<label className="block text-sm font-medium mb-2 dark:text-white text-black">
@@ -15,6 +15,7 @@ const TextArea = ({ value, onChange, label, readOnly }) => {
 				onChange={readOnly ? undefined : onChange} // Only set onChange if not readOnly
 				readOnly={readOnly}
 			/>
+			{error && <p className="text-red-500">{error}</p>}
 		</div>
 	);
 };

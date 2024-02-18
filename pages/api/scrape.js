@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import chromium from "chrome-aws-lambda";
 
 export default async function handler(req, res) {
 	// Ensure the request is a POST request
@@ -11,12 +11,15 @@ export default async function handler(req, res) {
 		return res.status(400).json({ error: "URL is required" });
 	}
 
-	let browser;
+	let browser = null;
 	try {
-		browser = await puppeteer.launch({
-			headless: false,
-			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+		browser = await chromium.puppeteer.launch({
+			args: chromium.args,
+			defaultViewport: chromium.defaultViewport,
+			executablePath: await chromium.executablePath,
+			headless: chromium.headless,
 		});
+
 		const page = await browser.newPage();
 
 		await page.goto(url, { waitUntil: "domcontentloaded" });
@@ -37,6 +40,8 @@ export default async function handler(req, res) {
 			.json({ error: "An error occurred while accessing the page." });
 	}
 }
+
+// ... rest of your code
 
 async function scrapePage(url, page) {
 	console.log("URL being checked:", url); // Add this to diagnose

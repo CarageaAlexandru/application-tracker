@@ -14,7 +14,7 @@ function SearchComponent({ value, onChange, onSearch }) {
 					type="text"
 					id="hs-trailing-button-add-on-with-icon-and-button"
 					name="hs-trailing-button-add-on-with-icon-and-button"
-					className="py-3 px-4 ps-11 block w-full text-black border-gray-300 shadow-sm rounded-s-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+					className="py-3 px-4 ps-11 block w-full text-black border-gray-300 shadow-sm rounded text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
 					value={value}
 					onChange={onChange}
 					placeholder="Enter job link"

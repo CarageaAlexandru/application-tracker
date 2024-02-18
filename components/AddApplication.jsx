@@ -30,7 +30,7 @@ export default function AddApplication() {
 						{/* Modal header */}
 						<div className="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
 							<h3 className="font-bold text-gray-800 dark:text-white">
-								Modal Title
+								Add Application
 							</h3>
 							<button
 								type="button"

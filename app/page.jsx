@@ -8,8 +8,11 @@ import JobList from "@/components/JobList";
 import { useState } from "react";
 
 export default function Home() {
-	const [activeFilter, setActiveFilter] = useState("Applied");
-
+	const [activeFilter, setActiveFilter] = useState("All");
+	const [activeSearch, setActiveSearch] = useState("");
+	const handleSearch = (searchTerm) => {
+		setActiveSearch(searchTerm);
+	};
 	const handleFilterSelect = (filter) => {
 		setActiveFilter(filter);
 	};
@@ -21,11 +24,11 @@ export default function Home() {
 			<div className="col-span-1 row-span-12 ">
 				<Stats />
 				<StatusFilters onFilterSelect={handleFilterSelect} />
-				<SearchInput />
+				<SearchInput onSearchSelect={handleSearch} />
 			</div>
 			<div className="col-span-4 row-span-12  overflow-y-auto p-4">
 				<AddApplication />
-				<JobList activeFilter={activeFilter} />
+				<JobList activeFilter={activeFilter} activeSearch={activeSearch} />
 			</div>
 		</div>
 	);

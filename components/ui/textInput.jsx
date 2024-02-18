@@ -1,6 +1,6 @@
 import React from "react";
 
-const TextInput = ({ label, value, onChange, readOnly }) => {
+const TextInput = ({ label, value, onChange, readOnly, error }) => {
 	return (
 		<div className="flex flex-col">
 			<label className="block text-sm font-medium mb-2 dark:text-white text-black">
@@ -13,6 +13,8 @@ const TextInput = ({ label, value, onChange, readOnly }) => {
 				onChange={readOnly ? undefined : onChange} // Only set onChange if not readOnly
 				readOnly={readOnly}
 			/>
+			{/* show an error message  */}
+			{error && <p className="text-red-500">{error}</p>}
 		</div>
 	);
 };
