@@ -39,6 +39,7 @@ const Form = () => {
 			date,
 			notes,
 		};
+		console.log("🚀 ~ handleSubmit ~ jobData:", jobData)
 
 		try {
 			// Validate form data against the Zod schema
@@ -46,11 +47,15 @@ const Form = () => {
 
 			// If validation passes, proceed with form submission
 			try {
-				const response = await axios.post("/api/create-application", jobData, {
-					headers: {
-						"Content-Type": "application/json",
-					},
-				});
+				const response = await axios.post(
+					"/api/applications/create-application",
+					jobData,
+					{
+						headers: {
+							"Content-Type": "application/json",
+						},
+					}
+				);
 
 				// Handle success - e.g., resetting the form, showing a success message, etc.
 				console.log(response.data.message);

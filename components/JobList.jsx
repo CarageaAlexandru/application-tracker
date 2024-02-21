@@ -22,27 +22,55 @@ export default function JobList({ activeFilter, activeSearch }) {
 
 	const filteredJobs = filterJobs(jobs);
 	const handleDescriptionClick = (description) => {
-		setModalContent(description);
+		const paragraphs = description.split("\n");
+
+		// Wrap each paragraph in <p> tags
+		const formattedDescription = paragraphs.map((paragraph, index) => (
+			<p key={index}>{paragraph}</p>
+		));
+
+		setModalContent(formattedDescription);
 		setIsModalOpen(true);
 	};
 
 	const fetchJobs = async () => {
 		try {
 			const response = await axios.get("/api/fetch-jobs");
-			const formattedJobs = response.data.map((job) => ({
-				...job,
-				application_date: new Date(job.application_date).toLocaleDateString({
-					year: "numeric",
-					month: "long",
-					day: "numeric",
-				}),
-			}));
+			const jobs = response.data;
+
+			// Shorten the job_link URL for each job
+			const formattedJobs = await Promise.all(
+				jobs.map(async (job) => {
+					const url = job.job_link;
+					const shortResponse = await axios.post(
+						"/api/shorten",
+						{ url },
+						{
+							headers: {
+								"Content-Type": "application/json",
+							},
+						}
+					);
+					const shortData = shortResponse.data;
+					return {
+						...job,
+						job_link: `${window.location.origin}/api/shorten?id=${shortData.id}`,
+						application_date: new Date(job.application_date).toLocaleDateString(
+							{
+								year: "numeric",
+								month: "long",
+								day: "numeric",
+							}
+						),
+					};
+				})
+			);
+
 			setJobs(formattedJobs);
 		} catch (error) {
 			console.error("Failed to fetch jobs:", error);
 		}
 	};
-
 
 	useEffect(() => {
 		fetchJobs();
@@ -107,7 +135,28 @@ export default function JobList({ activeFilter, activeSearch }) {
 											{job.application_date}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-											{job.job_link}
+											<a
+												href={job.job_link}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-blue-600 hover:text-blue-800 flex items-center"
+											>
+												{job.job_link}
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													className="ml-2 h-4 w-4"
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2}
+														d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+													/>
+												</svg>
+											</a>
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
 											{job.status}
@@ -142,7 +191,7 @@ export default function JobList({ activeFilter, activeSearch }) {
 				</div>
 			</div>
 			<Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
-				<p className="text-gray-800">{modalContent}</p>
+				{modalContent}
 			</Modal>
 		</div>
 	);

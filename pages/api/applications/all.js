@@ -17,9 +17,9 @@ export default async function handler(req, res) {
       SELECT *
       FROM applications
     `;
-        const count = rows.length;
+		const count = rows.length;
 
-		res.status(200).json({count});
+		res.status(200).json({ count });
 	} catch (error) {
 		console.error("Error fetching applications:", error);
 		res.status(500).json({ message: "Internal Server Error" });

@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from "react";
-
-// display current month
 const currentMonth = new Date().toLocaleString("default", { month: "long" });
 
 export default function Stats() {
 	const [currentMonthCount, setCurrentMonthCount] = useState(0);
 	const [totalCount, setTotalCount] = useState(0);
 
+	const fetchCurrentMonthCount = async () => {
+		try {
+			const response = await fetch("/api/applications/current-month");
+			const data = await response.json();
+			setCurrentMonthCount(data.count);
+		} catch (error) {
+			console.error("Error fetching jobs:", error);
+		}
+	};
+
+	const fetchAllApplicationsCount = async () => {
+		try {
+			const response = await fetch("/api/applications/all");
+			const data = await response.json();
+			setTotalCount(data.count);
+		} catch (error) {
+			console.error("Error fetching jobs:", error);
+		}
+	};
+
 	useEffect(() => {
 		// Fetch the count of applications for the current month
-		fetch("/api/applications/current-month")
-			.then((response) => response.json())
-			.then((data) => {
-				setCurrentMonthCount(data.count);
-			})
-			.catch((error) => {
-				console.error("Error fetching jobs:", error);
-			});
-
+		fetchCurrentMonthCount();
 		// Fetch the total count of applications
-		fetch("/api/applications/all")
-			.then((response) => response.json())
-			.then((data) => {
-				setTotalCount(data.count);
-			})
-			.catch((error) => {
-				console.error("Error fetching applications:", error);
-			});
+		fetchAllApplicationsCount();
 	}, []);
 
 	return (

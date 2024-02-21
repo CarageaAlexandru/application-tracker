@@ -16,7 +16,7 @@ export default function Modal({ show, onClose, children }) {
 							<h3 className="text-3xl font-semibold">Description</h3>
 							<button
 								className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-								onClick={onClose} // Corrected to use onClose prop
+								onClick={onClose}
 							>
 								<span className="text-black h-6 w-6 text-2xl block outline-none focus:outline-none">
 									×
@@ -24,13 +24,15 @@ export default function Modal({ show, onClose, children }) {
 							</button>
 						</div>
 						{/* body */}
-						<div className="relative p-6 flex-auto">{children}</div>
+						<div className="relative p-6 flex-auto overflow-y-auto max-h-[calc(100vh-500px)] max-w-4xl">
+							{children}
+						</div>
 						{/* footer */}
 						<div className="flex items-center justify-end p-6 border-t border-solid border-gray-200 rounded-b">
 							<button
 								className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 								type="button"
-								onClick={onClose} // Use onClose here too for the Close button
+								onClick={onClose}
 							>
 								Close
 							</button>
